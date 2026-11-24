@@ -1,0 +1,6 @@
+{
+  "version": "v0.103.5",
+  "dns_port": 53,
+  "http_port": 3000,
+  "protection_enabled": true
+}

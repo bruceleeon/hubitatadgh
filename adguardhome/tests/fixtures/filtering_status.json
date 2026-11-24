@@ -1,0 +1,15 @@
+{
+  "enabled": false,
+  "filters": [
+    {
+      "name": "AdGuard DNS filter",
+      "url": "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
+      "enabled": true,
+      "last_updated": "2026-11-22T00:00:00Z",
+      "rules_count": 1
+    }
+  ],
+  "whitelist": [],
+  "interval": 72,
+  "last_updated": "2026-11-22T00:00:00Z"
+}

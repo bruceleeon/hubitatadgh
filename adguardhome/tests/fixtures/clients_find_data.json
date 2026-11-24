@@ -1,0 +1,27 @@
+{
+  "data": {
+    "192.168.1.50": [
+      {
+        "name": "livingroom-tv",
+        "ids": ["192.168.1.50", "aa:bb:cc:dd:ee:ff"],
+        "tags": ["tv"],
+        "use_global_settings": false,
+        "filtering_enabled": true,
+        "safebrowsing_enabled": false,
+        "safesearch_enabled": false,
+        "use_global_blocked_services": false,
+        "blocked_services": ["netflix"],
+        "parents": [
+          {
+            "domain": "example.com",
+            "whitelist": false
+          }
+        ],
+        "upnames": ["tv-upname"],
+        "interface": "",
+        "ip": "192.168.1.50",
+        "mac": "aa:bb:cc:dd:ee:ff"
+      }
+    ]
+  }
+}
