@@ -6,7 +6,6 @@
  *  Version: 1.0.0
 */
 
-import groovyx.net.http.ContentType
 import groovy.transform.Field
 
 definition(

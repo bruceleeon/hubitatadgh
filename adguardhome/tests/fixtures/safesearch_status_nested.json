@@ -1,0 +1,8 @@
+{
+  "enabled": false,
+  "bing": true,
+  "duckduckgo": false,
+  "google": true,
+  "pixabay": false,
+  "yandex": false
+}

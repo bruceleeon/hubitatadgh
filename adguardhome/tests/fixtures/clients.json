@@ -1,0 +1,33 @@
+{
+  "clients": [
+    {
+      "name": "livingroom-tv",
+      "ids": ["192.168.1.50", "aa:bb:cc:dd:ee:ff"],
+      "tags": ["tv"],
+      "use_global_settings": false,
+      "filtering_enabled": true,
+      "safebrowsing_enabled": false,
+      "safesearch_enabled": false,
+      "use_global_blocked_services": false,
+      "blocked_services": ["netflix"],
+      "parents": [],
+      "upnames": ["tv-upname"],
+      "interface": "",
+      "ip": "192.168.1.50",
+      "mac": "aa:bb:cc:dd:ee:ff",
+      "last_seen": "2026-11-22T10:00:00Z"
+    },
+    {
+      "name": "",
+      "ids": ["192.168.1.60"],
+      "tags": [],
+      "use_global_settings": true
+    },
+    {
+      "name": "no-ids-host",
+      "ids": [],
+      "tags": [],
+      "use_global_settings": true
+    }
+  ]
+}

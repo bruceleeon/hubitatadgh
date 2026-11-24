@@ -1,0 +1,7 @@
+{
+  "protected": true,
+  "dns_port": 53,
+  "http_port": 3000,
+  "pid": 1234,
+  "protection_disabled_duration": 0
+}
