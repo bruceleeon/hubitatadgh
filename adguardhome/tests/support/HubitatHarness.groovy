@@ -113,7 +113,9 @@ class HubitatHarness {
         // Supports both driver-style addChildDevice(driver, dni, meta) and
         // app-style addChildDevice(namespace, driver, dni, location, meta).
         binding.setVariable("addChildDevice", { Object... args ->
-            def strings = args.findAll { it instanceof String }
+            // GStrings count as strings: Groovy string interpolation yields
+            // GString, not String, and the driver builds DNIs that way.
+            def strings = args.findAll { it instanceof CharSequence }.collect { it.toString() }
             def meta = args.find { it instanceof Map }
             def id = strings.size() > 0 ? strings[-1] : "unknown"
             def driverName = strings.size() >= 2 ? strings[-2] : "unknown"
@@ -122,7 +124,9 @@ class HubitatHarness {
             harness.calls << [method: "ADD_CHILD", path: driverName, body: [id: id, meta: meta], headers: [:]]
             return child
         })
-        binding.setVariable("deleteChildDevice", { id -> harness.children.remove("${id}") })
+        // Note: Map.remove(GString) never matches String keys (different
+        // hash codes), so stringify the id explicitly.
+        binding.setVariable("deleteChildDevice", { id -> harness.children.remove(id?.toString()) })
         binding.setVariable("pauseExecution", { ms -> null })
         binding.setVariable("runEvery5Minutes", { m -> null })
         binding.setVariable("runIn", { s, m -> null })

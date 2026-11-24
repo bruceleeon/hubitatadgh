@@ -112,11 +112,16 @@ def refresh() {
         "safebrowsing":    { getSafeBrowsing() },
         "safesearch":      { getSafeSearch() },
         "parental":        { getParental() },
-        "blocked_services":{ getBlockedServices() }
+        "blocked_services":{ getBlockedServices() != null }
     ]
     collectors.each { name, collector ->
         try {
-            collector.call()
+            if (collector.call() == false) {
+                // The collector already logged the sanitized HTTP failure;
+                // report which endpoint it was so operators can act on it.
+                failures++
+                logError "Refresh of '${name}' failed (see the HTTP request error above)"
+            }
         } catch (Exception e) {
             failures++
             logError "Refresh of '${name}' failed: ${sanitizeErrorMessage(e)}"
@@ -128,13 +133,18 @@ def refresh() {
 }
 
 // State Collectors
+/*
+ * Each collector returns true when its authoritative read succeeded (even if
+ * the payload lacked expected fields) and false when the read failed, so
+ * refresh() can report the failed endpoint by name.
+ */
 def getStatus() {
     logDebug "Getting Status...."
     def respValues = doHttpGet("/status")
     if (!(respValues instanceof Map)) {
         // Older releases exposed "version" only on the newer API status
         // endpoint; try it before giving up (both are documented reads).
-        return
+        return false
     }
     def version = respValues.version
     if (version == null) {
@@ -162,46 +172,67 @@ def getStatus() {
     if (protection != null) {
         sendEvent(name: "protection", value: protection.toString())
     }
+    return true
 }
 
 def getFiltering() {
     logDebug "Getting Filtering...."
     def respValues = doHttpGet("/filtering/status")
+    if (respValues == null) {
+        return false
+    }
     if (respValues instanceof Map && respValues.enabled != null) {
         sendEvent(name: "filtering", value: respValues.enabled.toString())
     }
+    return true
 }
 
 def getDHCP() {
     logDebug "Getting DHCP...."
     def respValues = doHttpGet("/dhcp/status")
+    if (respValues == null) {
+        return false
+    }
     if (respValues instanceof Map && respValues.enabled != null) {
         sendEvent(name: "dhcp", value: respValues.enabled.toString())
     }
+    return true
 }
 
 def getSafeBrowsing() {
     logDebug "Getting SafeBrowsing...."
     def respValues = doHttpGet("/safebrowsing/status")
+    if (respValues == null) {
+        return false
+    }
     if (respValues instanceof Map && respValues.enabled != null) {
         sendEvent(name: "safeBrowsing", value: respValues.enabled.toString())
     }
+    return true
 }
 
 def getSafeSearch() {
     logDebug "Getting SafeSearch...."
     def respValues = doHttpGet("/safesearch/status")
+    if (respValues == null) {
+        return false
+    }
     if (respValues instanceof Map && respValues.enabled != null) {
         sendEvent(name: "safeSearch", value: respValues.enabled.toString())
     }
+    return true
 }
 
 def getParental() {
     logDebug "Getting Parental...."
     def respValues = doHttpGet("/parental/status")
+    if (respValues == null) {
+        return false
+    }
     if (respValues instanceof Map && respValues.enabled != null) {
         sendEvent(name: "parental", value: respValues.enabled.toString())
     }
+    return true
 }
 
 /*

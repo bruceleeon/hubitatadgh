@@ -14,8 +14,15 @@ Map captured = [:]
 
 // ---- DhcpOn preserves interface and v4/v6 ----
 def h = HubitatHarness.load(serverFile)
-h.routeFile(fixturesDir, "GET", "/control/dhcp/status", "dhcp_status.json")
-h.route("POST", "/control/dhcp/set_config", { params -> captured.body = params.body; return [:] })
+// Stateful mock: the real server persists set_config, so the follow-up
+// /dhcp/status re-read must reflect the applied change.
+def dhcpDoc = new JsonSlurper().parse(new File(fixturesDir, "dhcp_status.json"))
+h.route("GET", "/control/dhcp/status", { params -> return new LinkedHashMap(dhcpDoc) })
+h.route("POST", "/control/dhcp/set_config", { params ->
+    captured.body = params.body
+    dhcpDoc.enabled = params.body.enabled
+    return [:]
+})
 h.script.DhcpOn()
 
 def body = captured.body
